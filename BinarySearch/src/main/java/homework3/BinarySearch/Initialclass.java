@@ -80,9 +80,22 @@ try{
 	  a1[i]=list.get(i-1);
  
   if(inputFilePath.compareTo("s")==0)
-	  System.out.println(binarySearch(a1,outputFilePath));
+        int c = binarySearch(a1,outputFilePath);
+	if(c==-1)
+	{
+		System.out.println("0");
+	}
+	else
+		System.out.println("1");
   else
-	  System.out.println(binarySearch(a1,outputFilePath));
+	  c = binarySearch(a1,outputFilePath);
+
+	if(c==-1)
+	{
+		System.out.println("0");
+	}
+	else
+		System.out.println("1");
   /*else{
 	  System.out.println("i");
 	  for (int i=0;i<list.size();i++)
