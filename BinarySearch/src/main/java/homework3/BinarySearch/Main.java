@@ -1,9 +1,10 @@
+
 package homework3.BinarySearch;
 
 import org.apache.commons.cli.*;
 
 
-public class Initialclass  {
+public class Main  {
 	
 	public static void main(String[] args) {
 		int returnValue = -1;
