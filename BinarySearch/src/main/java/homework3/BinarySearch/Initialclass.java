@@ -1,119 +1,113 @@
 package homework3.BinarySearch;
 
-import java.util.List;
-//import java.util.StringTokenizer;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-public class Initialclass {
-	 public static final int NOT_FOUND = -1;
-	public static int binarySearch( Comparable [ ] a, Comparable x )
-    {
-        int initial = 0;
-        int end = a.length - 1;
-        int middle;
-
-        while( initial <= end )
-        {
-            middle = ( initial + end ) / 2;
-
-            if( a[ middle ].compareTo( x ) < 0 )
-                initial = middle + 1;
-            else if( a[ middle ].compareTo( x ) > 0 )
-                end = middle - 1;
-            else
-                return middle;
-        }
-
-        return NOT_FOUND;     // NOT_FOUND = -1
-    }
+import org.apache.commons.cli.*;
 
 
- public static void main(String[] args) throws Exception {
+public class Initialclass  {
 	
-     //Comparable [ ] a1 = new String [4];
-    // for( int i = 0; i < args.length; i++ )
-     
-    	
-     
-  Options options = new Options();
-
-  Option input = new Option("type", "input", true, "input file to read data from");
-  input.setRequired(true);
-  input.setArgName("FILE PATH");
-  options.addOption(input);
-
-  Option output = new Option("key", "output", true, "output file to write the final result");
-  output.setRequired(true);
-  output.setArgName("FILE PATH");
-  options.addOption(output);
-  
- Option output2 = new Option("list", "output2", false, "output file to write the final result");
-  output2.setRequired(false);
-  output2.setArgName("FILE PATH");
-  options.addOption(output2);
-
-  CommandLineParser commandLineParser = new DefaultParser();
-
-  CommandLine commandLine;
-try{
-  commandLine = commandLineParser.parse(options, args);
-
-  String inputFilePath = commandLine.getOptionValue("input");
-  String outputFilePath = commandLine.getOptionValue("output");
-  String firstelement = commandLine.getOptionValue("output2");
-  List<String> list = commandLine.getArgList();
-  System.out.println(firstelement);
-  if(firstelement==null) {
-	  System.err.println("-1");
-  System.exit(1);
-  }
-  String [ ] a1 = new String [list.size()+1];
-  a1[0]=firstelement;
- // Integer [ ] a2 = new Integer[list.size()+1];
-  for (int i=1;i<list.size()+1;i++)
-	  a1[i]=list.get(i-1);
- 
-  if(inputFilePath.compareTo("s")==0)
-        int c = binarySearch(a1,outputFilePath);
-	if(c==-1)
-	{
-		System.out.println("0");
+	public static void main(String[] args) {
+		int returnValue = -1;
+		
+		Options options = new Options();
+		Option type = Option.builder("Type")
+				.required()
+				.longOpt("type")
+				.desc("specifies the type of input: 'i' for integer and 's' for string")
+				.hasArg()
+				.argName("TYPE")
+				.build();
+		options.addOption( type );
+		
+		
+		
+		Option key = Option.builder("Key")
+				.required()
+				.longOpt("key")
+				.desc("specifies the element to be searched in the list")
+				.hasArg()
+		    	.argName("KEY")
+		    	.build();
+		options.addOption( key );
+		
+		
+		
+		Option list = Option.builder("List")
+				.required()
+				.longOpt("list")
+				.desc("specifies the list of sorted integer or strings")
+				.hasArgs()
+				.argName("LIST")
+				.build();
+		options.addOption( list );
+		
+		
+		CommandLineParser parser = new DefaultParser();	
+		try {	
+		    
+		    CommandLine line = parser.parse( options, args );
+		    String inputType = line.getOptionValue("type");
+		    String inputKey = line.getOptionValue("key");
+		    String[] inputList = line.getOptionValues("list");
+		    if (inputType.equalsIgnoreCase("i")) {
+		    	
+		    	try {											
+		    		Integer keyValue=Integer.parseInt(inputKey);
+			    	int length= inputList.length;
+			    	Integer[] listCopy= new Integer[length];
+		    		for (int i = 0; i < length; i++) {
+		    			listCopy[i]=Integer.parseInt(inputList[i]); 
+			    	}
+		    		
+			    	if (binSearch(listCopy,keyValue)){
+			    		returnValue = 1;
+			    	}
+			    	else {
+			    		returnValue = 0;
+			    	}
+		    	} 
+		    	catch (NumberFormatException e) {
+		    		    System.out.println("Only integers are allowed " + e);
+		    		    System.out.println("Program Terminated");
+		    		    System.exit(1);
+		    	}
+		    }
+		    else if (inputType.equalsIgnoreCase("s")) {
+		    	String keyValue=inputKey;
+		    	String[] listCopy=inputList;
+		    	if (binSearch(listCopy,keyValue)){
+		    		returnValue = 1;
+		    	}
+		    	else {
+		    		returnValue = 0;
+		    	}
+		    }
+		    System.out.println(returnValue);				
+		}
+		catch( ParseException e ) {
+		    System.out.println("Unexpected exception:" + e.getMessage());
+		    System.out.println("Unable to parse command line.");
+		}
+		
 	}
-	else
-		System.out.println("1");
-  else
-	  c = binarySearch(a1,outputFilePath);
-
-	if(c==-1)
-	{
-		System.out.println("0");
+		
+	private static <T extends Comparable<T>> boolean binSearch(T[] aList, T key) {
+		int initial = 0,last=aList.length-1,mid=((initial+last)/2);
+		T middleValue=aList[mid];
+		while (initial <= last) {			
+			if(key.compareTo(middleValue)==0){
+				return true;				
+			}
+			else if (key.compareTo(middleValue)<0){
+				
+				last = mid-1	;		
+			}
+			else if (key.compareTo(middleValue)>0){
+				initial = mid+1;		
+				
+			}
+			mid=(initial+last)/2;
+			middleValue=aList[mid];
+		}
+		return false;
 	}
-	else
-		System.out.println("1");
-  /*else{
-	  System.out.println("i");
-	  for (int i=0;i<list.size();i++)
-		  a2[i]=Integer.parseInt(a1[i]);
-	  int outputFilePath1=Integer.parseInt(outputFilePath);
-	  System.out.println(binarySearch(a2,outputFilePath1));
-  }*/
-	}
-
-  catch( ParseException exp ) {
-	    System.out.println( "Unexpected exception:" + exp.getMessage() );
-	}
-
- 
-  //String outputFilePath = commandLine.getOptionValue("output");
- 
- }
- 
- }
-
-
+}
